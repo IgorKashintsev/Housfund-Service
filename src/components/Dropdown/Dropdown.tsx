@@ -3,22 +3,24 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { FC, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { onAnchorEl, onOpen } from "../../store/dropdown/actions";
-import { StoreState } from "../../store";
+import { onAnchorEl, onOpen } from "../../store/dropdown/slice";
 import { ModalDelete } from "./ModalDelete/ModalDelete";
-import { onOpenModalChange, onOpenModalDel } from "../../store/modal/actions";
+import { onOpenModalChange, onOpenModalDel, onUserId } from "../../store/modal/slice";
 import { ModalChange } from "./ModalChange/ModalChange";
 import style from "./Dropdown.module.scss";
+import { selectLoading } from "../../store/loading/selectors";
+import { selectAnchorEl, selectOpenDropdown } from "../../store/dropdown/selectors";
+import { selectUsers } from "../../store/users/selectors";
 
 export const Dropdown: FC = () => {
-  const loading = useSelector((state: StoreState) => state.loading.loading);
-  const anchorEl = useSelector((state: StoreState) => state.dropdown.anchorEl);
-  const openDropdown = useSelector((state: StoreState) => state.dropdown.openDropdown);
-  const users = useSelector((state: StoreState) => state.users.users);
+  const loading = useSelector(selectLoading);
+  const anchorEl = useSelector(selectAnchorEl);
+  const openDropdown = useSelector(selectOpenDropdown);
+  const users = useSelector(selectUsers);
   const dispatch = useDispatch();
 
   const handleClickButton = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if(users.length >0) {
+    if(users.length > 0) {
     dispatch(onAnchorEl(event.currentTarget));
     dispatch(onOpen(true));
     }
@@ -30,11 +32,13 @@ export const Dropdown: FC = () => {
   };
 
   const handleClickDelete = (userId: number) => {
-    dispatch(onOpenModalDel(userId, true));
+    dispatch(onUserId(userId));
+    dispatch(onOpenModalDel(true));
   };
 
   const handleClickEdit = (userId: number) => {
-    dispatch(onOpenModalChange(userId, true));
+    dispatch(onUserId(userId));
+    dispatch(onOpenModalChange(true));
   };
 
   useEffect(() => {
