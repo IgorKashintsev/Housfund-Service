@@ -2,14 +2,14 @@ import  LoadingButton  from "@mui/lab/LoadingButton";
 import DownloadIcon from "@mui/icons-material/Download";
 import { FC } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { StoreState } from "../../store";
-import { onError, onLoading } from "../../store/loading/actions";
-import { addUsers } from "../../store/users/actions";
+import { onError, onLoading } from "../../store/loading/slice";
+import { addUsers } from "../../store/users/slice";
 import style from "./Button.module.scss";
+import { selectError, selectLoading } from "../../store/loading/selectors";
 
 export const Button: FC = () => {
-  const loading = useSelector((state: StoreState) => state.loading.loading);
-  const error = useSelector((state: StoreState) => state.loading.error);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
   const dispatch = useDispatch();
 
   const handleClick = () => {

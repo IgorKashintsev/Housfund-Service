@@ -1,11 +1,8 @@
-import { createStore, compose, combineReducers } from 'redux';
-import { dropdownReducer } from './dropdown/reducer';
-import { modalReducer } from './modal/reducer';
-import { loadingReducer } from './loading/reducer';
-import { usersReducer } from './users/reducer';
-
-export const composeEnhancers =
-  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { dropdownReducer } from './dropdown/slice';
+import { modalReducer } from './modal/slice';
+import { loadingReducer } from './loading/slice';
+import { usersReducer } from './users/slice';
 
 const rootReducer = combineReducers({
   dropdown: dropdownReducer,
@@ -15,4 +12,10 @@ const rootReducer = combineReducers({
 });
 
 export type StoreState = ReturnType<typeof rootReducer>;
-export const store = createStore(rootReducer, composeEnhancers());
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false,
+  }),
+  devTools: process.env.NODE_ENV !== 'production',
+});

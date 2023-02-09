@@ -1,12 +1,14 @@
 import { Box, Button, Modal, StyledEngineProvider, TextField } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { onOpenModalChange } from "../../../store/modal/actions";
-import { StoreState } from "../../../store";
-import { changeUser } from "../../../store/users/actions";
+import { onOpenModalChange, onUserId } from "../../../store/modal/slice";
+import { changeUser } from "../../../store/users/slice";
 import styleModalChange from "./ModalChange.module.scss";
+import { selectUsers } from "../../../store/users/selectors";
+import { selectOpenModalChange, selectUserId } from "../../../store/modal/selectors";
 
 export const ModalChange: FC = () => {
+  const [errorName, setErrorName] = useState(false);
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorWebsite, setErrorWebsite] = useState(false);
   const [valueName, setValueName] = useState('');
@@ -14,9 +16,9 @@ export const ModalChange: FC = () => {
   const [valueEmail, setValueEmail] = useState('');
   const [valuePhone, setValuePhone] = useState('');
   const [valueWebsite, setValueWebsite] = useState('');
-  const users = useSelector((state: StoreState) => state.users.users);
-  const openModalChange = useSelector((state: StoreState) => state.modal.openModalChange);
-  const userId = useSelector((state: StoreState) => state.modal.userId);
+  const users = useSelector(selectUsers);
+  const openModalChange = useSelector(selectOpenModalChange);
+  const userId = useSelector(selectUserId);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -30,8 +32,12 @@ export const ModalChange: FC = () => {
   }, [openModalChange]);
 
   useEffect(() => {
+    setErrorName(false);
     setErrorEmail(false);
     setErrorWebsite(false);
+    if (!valueName.match(/^[a-zа-яА-ЯёЁ]+/gim)) {
+      setErrorName(true);
+    } 
     if (!valueEmail.match(/^([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})$/gim)) {
       setErrorEmail(true);
     } 
@@ -40,7 +46,7 @@ export const ModalChange: FC = () => {
       )) {
         setErrorWebsite(true);
       }
-  }, [valueEmail, valueWebsite]);
+  }, [valueName, valueEmail, valueWebsite]);
 
   const handleSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
@@ -56,7 +62,13 @@ export const ModalChange: FC = () => {
     }
     const usersEditArr = users.map(item => item.id !== userId ? item : editUser)
     dispatch(changeUser(usersEditArr));
-    dispatch(onOpenModalChange(0, false));
+    dispatch(onUserId(0));
+    dispatch(onOpenModalChange(false));
+  };
+
+  const handleClickCancel = () => {
+    dispatch(onUserId(0));
+    dispatch(onOpenModalChange(false));
   };
 
   return (
@@ -73,8 +85,10 @@ export const ModalChange: FC = () => {
           <TextField
             className={styleModalChange.box__input}
             type="text"
+            error={errorName}
             label="Name"
             defaultValue={users.find((item) => item.id === userId)?.name}
+            helperText={errorName ? "Incorrect entry." : ""}
             variant="filled"
             multiline
             maxRows={3}
@@ -136,6 +150,7 @@ export const ModalChange: FC = () => {
                   valueEmail && 
                   valuePhone && 
                   valueWebsite &&
+                  !errorName &&
                   !errorEmail &&
                   !errorWebsite
                 )
@@ -145,7 +160,7 @@ export const ModalChange: FC = () => {
               className={styleModalChange.box__buttons__cancel}
               type="button"
               variant="contained"
-              onClick={() => dispatch(onOpenModalChange(0, false))}
+              onClick={handleClickCancel}
             >Cancel</Button>
           </div>
         </Box>
