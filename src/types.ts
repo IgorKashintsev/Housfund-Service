@@ -46,3 +46,22 @@ export interface Modal {
   openModalDel?: boolean;
   openModalChange?: boolean;
 };
+
+export type ColorButton = 
+  "error" | 
+  "success" | 
+  "inherit" | 
+  "primary" | 
+  "secondary" | 
+  "info" | 
+  "warning" | 
+  undefined;
+
+export interface EditUser {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  phone: string;
+  website: string;
+};
