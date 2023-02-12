@@ -3,9 +3,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { FC, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { onAnchorEl, onOpen } from "../../store/dropdown/slice";
+import { onOpenDropdown } from "../../store/dropdown/slice";
 import { ModalDelete } from "./ModalDelete/ModalDelete";
-import { onOpenModalChange, onOpenModalDel, onUserId } from "../../store/modal/slice";
+import { onOpenModalChange, onOpenModalDel } from "../../store/modal/slice";
 import { ModalChange } from "./ModalChange/ModalChange";
 import style from "./Dropdown.module.scss";
 import { selectLoading } from "../../store/loading/selectors";
@@ -21,29 +21,25 @@ export const Dropdown: FC = () => {
 
   const handleClickButton = (event: React.MouseEvent<HTMLButtonElement>) => {
     if(users.length > 0) {
-    dispatch(onAnchorEl(event.currentTarget));
-    dispatch(onOpen(true));
+    dispatch(onOpenDropdown({anchorEl: event.currentTarget, openDropdown: true}));
     }
   };
 
   const handleClose = () => {
-    dispatch(onAnchorEl(null));
-    dispatch(onOpen(false));
+    dispatch(onOpenDropdown({anchorEl: null, openDropdown: false}));
   };
 
   const handleClickDelete = (userId: number) => {
-    dispatch(onUserId(userId));
-    dispatch(onOpenModalDel(true));
+    dispatch(onOpenModalDel({userId: userId, openModalDel: true}));
   };
 
   const handleClickEdit = (userId: number) => {
-    dispatch(onUserId(userId));
-    dispatch(onOpenModalChange(true));
+    dispatch(onOpenModalChange({userId: userId, openModalChange: true}));
   };
 
   useEffect(() => {
     if(users.length < 1) {
-      dispatch(onAnchorEl(null));
+      dispatch(onOpenDropdown({anchorEl: null, openDropdown: false}));
     }
   }, [users]);
 

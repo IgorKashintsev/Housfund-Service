@@ -4,7 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { FC } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteUser } from "../../../store/users/slice";
-import { onOpenModalDel, onUserId } from "../../../store/modal/slice";
+import { onOpenModalDel } from "../../../store/modal/slice";
 import styleModalDelete from "./ModalDelete.module.scss";
 import { selectUsers } from "../../../store/users/selectors";
 import { selectOpenModalDel, selectUserId } from "../../../store/modal/selectors";
@@ -16,15 +16,13 @@ export const ModalDelete: FC = () => {
   const dispatch = useDispatch();
 
   const handleClickDelete = () => {
-    const filteredArr = users.filter(item => item.id != userId);
-    dispatch(deleteUser(filteredArr));
-    dispatch(onUserId(0));
-    dispatch(onOpenModalDel(false));
+    const userIndex = users.findIndex(item => item.id === userId);
+    dispatch(deleteUser(userIndex));
+    dispatch(onOpenModalDel({userId: 0, openModalDel: false}));
   };
 
   const handleClickCancel = () => {
-    dispatch(onUserId(0));
-    dispatch(onOpenModalDel(false));
+    dispatch(onOpenModalDel({userId: 0, openModalDel: false}));
   };
 
   return (
