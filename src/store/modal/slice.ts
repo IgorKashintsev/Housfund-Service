@@ -11,17 +11,16 @@ const modalSlice = createSlice({
   name: 'dropdown',
   initialState,
   reducers: {
-    onUserId: (state, action: PayloadAction<number>) => {
-      state.userId = action.payload
+    onOpenModalDel: (state, action: PayloadAction<Modal>) => {
+      state.userId = action.payload.userId;
+      state.openModalDel = action.payload.openModalDel;
     },
-    onOpenModalDel: (state, action: PayloadAction<boolean>) => {
-      state.openModalDel = action.payload
-    },
-    onOpenModalChange: (state, action: PayloadAction<boolean>) => {
-      state.openModalChange = action.payload
+    onOpenModalChange: (state, action: PayloadAction<Modal>) => {
+      state.userId = action.payload.userId;
+      state.openModalChange = action.payload.openModalChange;
     },
   },
 });
 
-export const { onUserId, onOpenModalDel, onOpenModalChange } = modalSlice.actions;
+export const { onOpenModalDel, onOpenModalChange } = modalSlice.actions;
 export const modalReducer = modalSlice.reducer;

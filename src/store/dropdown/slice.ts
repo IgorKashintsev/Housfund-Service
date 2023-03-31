@@ -10,14 +10,12 @@ const dropdownSlice = createSlice({
   name: 'dropdown',
   initialState,
   reducers: {
-    onAnchorEl: (state, action: PayloadAction<any>) => {
-      state.anchorEl = action.payload
-    },
-    onOpen: (state, action: PayloadAction<boolean>) => {
-      state.openDropdown = action.payload
+    onOpenDropdown: (state, action: PayloadAction<AnchorState>) => {
+      state.anchorEl = action.payload.anchorEl as null;
+      state.openDropdown = action.payload.openDropdown;
     },
   },
 });
 
-export const { onAnchorEl, onOpen } = dropdownSlice.actions;
+export const { onOpenDropdown } = dropdownSlice.actions;
 export const dropdownReducer = dropdownSlice.reducer;

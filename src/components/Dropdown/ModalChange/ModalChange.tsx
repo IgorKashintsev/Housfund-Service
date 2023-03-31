@@ -1,8 +1,8 @@
 import { Box, Button, Modal, StyledEngineProvider, TextField } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { onOpenModalChange, onUserId } from "../../../store/modal/slice";
-import { changeUser } from "../../../store/users/slice";
+import { onOpenModalChange } from "../../../store/modal/slice";
+import { editUser } from "../../../store/users/slice";
 import styleModalChange from "./ModalChange.module.scss";
 import { selectUsers } from "../../../store/users/selectors";
 import { selectOpenModalChange, selectUserId } from "../../../store/modal/selectors";
@@ -50,25 +50,21 @@ export const ModalChange: FC = () => {
 
   const handleSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
-    const editUser = {
-      id: userId!,
-      name: valueName,
-      username: valueUserName,
-      email: valueEmail,
-      address: users.find((item) => item.id === userId)!.address,
-      phone: valuePhone,
-      website: valueWebsite,
-      company: users.find((item) => item.id === userId)!.company,
-    }
-    const usersEditArr = users.map(item => item.id !== userId ? item : editUser)
-    dispatch(changeUser(usersEditArr));
-    dispatch(onUserId(0));
-    dispatch(onOpenModalChange(false));
+    dispatch(editUser(
+      {
+        id: userId!,
+        name: valueName,
+        username: valueUserName,
+        email: valueEmail,
+        phone: valuePhone,
+        website: valueWebsite,
+      }
+    ));
+    dispatch(onOpenModalChange({userId: 0, openModalChange: false}));
   };
 
   const handleClickCancel = () => {
-    dispatch(onUserId(0));
-    dispatch(onOpenModalChange(false));
+    dispatch(onOpenModalChange({userId: 0, openModalChange: false}));
   };
 
   return (
@@ -87,7 +83,11 @@ export const ModalChange: FC = () => {
             type="text"
             error={errorName}
             label="Name"
-            defaultValue={users.find((item) => item.id === userId)?.name}
+            defaultValue={
+              users.length > 0 ?
+              users.find((item) => item.id === userId)?.name :
+              ''
+            }
             helperText={errorName ? "Incorrect entry." : ""}
             variant="filled"
             multiline
@@ -98,7 +98,11 @@ export const ModalChange: FC = () => {
             className={styleModalChange.box__input}
             type="text"
             label="Login"
-            defaultValue={users.find((item) => item.id === userId)?.username}
+            defaultValue={
+              users.length > 0 ?
+              users.find((item) => item.id === userId)?.username :
+              ''
+            }
             variant="filled"
             multiline
             maxRows={3}
@@ -109,7 +113,11 @@ export const ModalChange: FC = () => {
             type="email"
             error={errorEmail}
             label="Email"
-            defaultValue={users.find((item) => item.id === userId)?.email}
+            defaultValue={
+              users.length > 0 ?
+              users.find((item) => item.id === userId)?.email :
+              ''
+            }
             helperText={errorEmail ? "Incorrect entry." : ""}
             variant="filled"
             multiline
@@ -120,7 +128,11 @@ export const ModalChange: FC = () => {
             className={styleModalChange.box__input}
             type="tel"
             label="Phone"
-            defaultValue={users.find((item) => item.id === userId)?.phone}
+            defaultValue={
+              users.length > 0 ?
+              users.find((item) => item.id === userId)?.phone :
+              ''
+            }
             variant="filled"
             multiline
             maxRows={3}
@@ -131,7 +143,11 @@ export const ModalChange: FC = () => {
             type="text"
             error={errorWebsite}
             label="Website"
-            defaultValue={users.find((item) => item.id === userId)?.website}
+            defaultValue={
+              users.length > 0 ?
+              users.find((item) => item.id === userId)?.website :
+              ''
+            }
             helperText={errorWebsite ? "Incorrect entry." : ""}
             variant="filled"
             multiline
